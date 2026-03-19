@@ -1,13 +1,13 @@
 import mysql.connector
 from mysql.connector import pooling
-from module_program.env_key import *
+import module_program.env_key as env
 
 
 con ={
-    'user':'admin',
-    'password':database_password,
-    'host':'postgram.cragb4dlrndi.ap-northeast-1.rds.amazonaws.com',
-    'database':'postgram',
+    'user':env.db_user,
+    'password':env.db_password,
+    'host':env.db_host,
+    'database':env.db_name,
 }
 # 建立連接池
 connection_pool = pooling.MySQLConnectionPool(pool_name='postgram',pool_size=5,**con)
