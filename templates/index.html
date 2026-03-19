@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MessageBoard</title>
     <link rel="stylesheet" href="../static/style.css">
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
     <form class="file"  enctype="multipart/form-data">
@@ -14,26 +15,11 @@
         <textarea id="fileInput" rows="4" cols="48"></textarea>
         <div class="btn bold" id="share" type="submit">分享動態</div>
     </form>
-    <div class="signupfile">
-        請輸入帳號姓名:<input type="text" id="account--signup" ><br>
-        請輸入註冊信箱:<input type="email" id="email--signup"><br>
-        請輸入註冊密碼:<input type="password" id="password--signup">
-        <div id="signupAlert"></div>
-        <div class="btn bold" id="signup">註冊帳號</div>
-    </div>
-    <div class="signinfile">
-        請輸入信箱:<input type="email" id="email--signin" ><br>
-        請輸入密碼:<input type="password" id="password--signin">
-        <div id="signinAlert"></div>
-        <div class="btn bold" id="signin">登入系統</div>
-    </div>
     <div class="wrapper">
         <div class="nav">
             <h2 class="eng_title" id="postgram">PostGram</h2>
             <div id="welcome">
-                <span id="signupBTN">註冊/</span>
-                <span id="signinBTN">登入</span>
-                <span id="signoutBTN" style="display: none;">登出</span>
+                <div id = "signinDiv"></div>
             </div>
         </div>
         <div class="container">
@@ -42,8 +28,7 @@
             <img src="../static/image/plus.png" id="add">
         </div>
     </div>
-    <script src="../static/script/tool.js"></script>
-    <script src="../static/script/script.js"></script>
     <script src="../static/script/share.js"></script>
+    <script src="../static/script/script.js"></script>
 </body>
 </html>

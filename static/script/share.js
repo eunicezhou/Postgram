@@ -1,7 +1,23 @@
+//產生遮幕
+function createShield(){
+    const shield= document.createElement('div');
+    const setShieldStyle = "position:fixed;top:0px;width:100%;height:100%;z-index:2;background-color:rgba(0,0,0,0.5)";
+    shield.setAttribute('style',`${setShieldStyle}`);
+    shield.setAttribute('id',"shield");
+    document.querySelector('body').appendChild(shield);
+    shield.addEventListener('click',removeFile)
+}
+//使遮幕及表單消失
+function removeFile(){
+    const shield = document.querySelector("#shield");
+    document.querySelector('body').removeChild(shield);
+    document.querySelector(".file").setAttribute('style',"display:none;");
+    document.querySelector(".fileUpload").setAttribute('style',"display:flex;");
+    document.getElementById('previewImg').setAttribute('style',"display:none;");
+}
 //建立留言監聽事件
-newMessage.addEventListener('click',()=>{
-    const setFileStyle = "display:flex;"
-    newMessageFile.setAttribute('style',`${setFileStyle}`);
+document.querySelector("#add").addEventListener('click',()=>{
+    document.querySelector(".file").setAttribute('style',"display:flex;");
     const messageInput = document.querySelector('#fileInput');
     messageInput.setAttribute('placeholder',"請幫這張照片做一些說明");
     messageInput.addEventListener('click',()=>{
@@ -11,16 +27,15 @@ newMessage.addEventListener('click',()=>{
 })
 
 //獲取新留言放入的相片資訊
-const addImg = document.querySelector("#fileImg");
-addImg.addEventListener('change', async function() {
+document.querySelector("#fileImg").addEventListener('change', async function() {
     const file = this.files[0];
     let src = await loadFile(file);
     // let img = await loadImage(src); //將src轉為圖片
     // let square = getBase64(img);
     // src = square.src;
-    fakeInput.setAttribute('style',"display:none;");
-    preview.src = src;
-    preview.style= "display:block;width:400px;height:300px;object-fit:cover";
+    document.querySelector(".fileUpload").style.display = 'none';
+    document.getElementById('previewImg').src = src;
+    document.getElementById('previewImg').style= "display:block;width:400px;height:300px;object-fit:cover";
 })
 function loadFile(file){
     return new Promise((resolve,reject)=>{
@@ -65,21 +80,53 @@ async function storeMessage(formData){
     console.log(result);
 }
 
-const share = document.querySelector("#share");
-share.addEventListener('click',()=>{
-    const formData = new FormData();
+//建立頁面動態留言
+function messageRecord(account, picture, img_src, messageText){
+    const userphoto = document.createElement('img');
+    userphoto.setAttribute('class',"userphoto");
+    userphoto.setAttribute('src',`${picture}`);
+    const username = document.createElement('span');
+    username.setAttribute('class',"username bold");
+    username.textContent = account;
+    const usernav = document.createElement('div');
+    usernav.setAttribute('class',"usernav");
+    usernav.appendChild(userphoto);
+    usernav.appendChild(username);
 
-    let inputFile = addImg.files[0];
-    console.log(inputFile)
-    const addText = document.querySelector("#fileInput");
-    console.log(addText.value);
-    formData.append('photo',inputFile);
-    formData.append('text',addText.value);
+    const usercontain = document.createElement('div');
+    usercontain.setAttribute('class',"usercontain");
+    const messageImg = document.createElement('img');
+    messageImg.setAttribute('class',"messageImg");
+    messageImg.setAttribute('src',img_src)
+    const message = document.createElement('div');
+    message.setAttribute('class',"message");
+    const text = document.createElement('span');
+    text.setAttribute('class',"text");
+    text.textContent = messageText;
+    const usernameClone = username.cloneNode(true);
+    message.appendChild(usernameClone);
+    message.appendChild(text);
+    usercontain.appendChild(messageImg);
+    usercontain.appendChild(message);
 
-    storeMessage(formData);
+    const messageRecord = document.createElement('div');
+    messageRecord.setAttribute('class',"messageRecord");
+    messageRecord.appendChild(usernav);
+    messageRecord.appendChild(usercontain);
 
-    messageRecord("zhen",preview.src,addText.value);
-    const shield = document.querySelector('#shield');
-    body.removeChild(shield);
-    newMessageFile.setAttribute('style',`display:none`);
-})
+    document.querySelector(".container").appendChild(messageRecord);
+}
+messageRecord("zhou","../static/image/user.png", "../static/image/testPhoto.jpg","悠閒午後 輕鬆隨手畫");
+messageRecord("zhou","../static/image/user.png", "../static/image/testPhoto_2.jpg","你的幸運貓貓來了!!!");
+
+async function init(){
+    let records = await fetch("/api/record",
+        {method: "GET",headers: {"Content-Type": "application/json"}}
+    )
+    let recordJSON = await records.json();
+    for(let record in recordJSON){
+        console.log(recordJSON[record]);
+        messageRecord(recordJSON[record]['member_name'], recordJSON[record]['picture'], recordJSON[record]['photo'], recordJSON[record]['text']);
+    }
+}
+

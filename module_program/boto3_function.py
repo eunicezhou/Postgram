@@ -1,10 +1,10 @@
 import boto3
-from module_program.env_key import *
+import module_program.env_key as env
 
 s3 = boto3.client(
     's3',
-    aws_access_key_id='AKIAWSBWBJWOP6NZYPX4',
-    aws_secret_access_key='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',
+    aws_access_key_id=env.aws_access_key,
+    aws_secret_access_key=env.aws_secret_key,
     region_name='ap-northeast-1')
 
 def getBucketName():
